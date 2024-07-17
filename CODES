@@ -1,0 +1,117 @@
+import React, { useState } from "react"; // Importiere React und den useState-Hook
+import axios from "axios"; // Importiere axios für HTTP-Anfragen
+import "./Profil-Design.css"; // Importiere CSS-Datei für Styling
+
+const Profil1 = () => {
+  // Zustände zum Speichern von Benutzereingaben
+  const [name, setName] = useState(""); // Name
+  const [city, setCity] = useState(""); // Stadt
+  const [phone, setPhone] = useState(""); // Telefonnummer
+  const [birthday, setBirthday] = useState(""); // Geburtstag
+  const [description, setDescription] = useState(""); // Beschreibung
+  const [image, setImage] = useState(""); // Bild-URL (neuer Zustand zum Speichern der Bild-URL)
+
+  // Funktion zum Verarbeiten des Formulars
+  const handleSubmit = async () => {
+    try {
+      // Mache eine POST-Anfrage an den Server, um das Profil zu speichern
+      const response = await axios.post(
+        "http://3.124.9.130:3001/saveProfile",
+        {
+          name, // Sende den Namen an den Server
+          city, // Sende die Stadt an den Server
+          phone, // Sende die Telefonnummer an den Server
+          birthday, // Sende den Geburtstag an den Server
+          description, // Sende die Beschreibung an den Server
+        },
+        {
+          timeout: 10000, // Setze eine 10-Sekunden-Zeitüberschreitung für die Anfrage
+        }
+      );
+      alert(response.data); // Zeige eine Erfolgsmeldung mit den Antwortdaten an
+    } catch (error) {
+      // Fange und logge alle Fehler, die auftreten
+      console.error("Es gab einen Fehler beim Speichern des Profils!", error);
+      if (error.response) {
+        console.error("Antwortdaten:", error.response.data);
+        console.error("Antwortstatus:", error.response.status);
+        console.error("Antwortheader:", error.response.headers);
+      } else if (error.request) {
+        console.error("Anfragendaten:", error.request);
+      } else {
+        console.error("Fehlermeldung:", error.message);
+      }
+    }
+  };
+
+  // Funktion zum Verarbeiten von Bilduploads
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]; // Hole die hochgeladene Datei
+    const reader = new FileReader(); // Erstelle eine neue FileReader-Instanz
+    reader.onload = () => {
+      setImage(reader.result); // Aktualisiere den Bildzustand mit der hochgeladenen Bild-URL
+    };
+    reader.readAsDataURL(file); // Lese die Datei als Daten-URL
+  };
+
+  return (
+    <div className="p1">
+      // Platzhalter für das Profilbild
+      <img id="bookProfil" src="/img/book.png" alt="book" />
+
+      <div className="left-page">
+        // Bildupload-Sektion
+        <div className="image-placeholder">
+          {
+            // Wenn es kein Bild gibt, zeige den "Bild einfügen"-Label
+            image ? null : (
+              <label id="file2" htmlFor="file">
+                Bild einfügen
+              </label>
+            )
+          }
+          // Eingabefeld für den Bildupload
+          <input
+            src="input"
+            type="file"
+            id="file"
+            name="picture"
+            accept="image/png, image/jpeg"
+            onChange={handleImageChange}
+          />
+          {
+            // Wenn es ein Bild gibt, zeige es
+            image && (
+              <img
+                src={image}
+                alt="Profilbild"
+                id="profile-picture"
+                style={{
+                  width: "100%", // Setze die Breite auf 100% des Containers
+                  height: "100%", // Setze die Höhe auf 100% des Containers
+                  objectFit: "cover", // Stelle sicher, dass das Bild auf die gesamte Fläche passt
+                }}
+              />
+            )
+          }
+        </div>
+
+        // Profilinformationen-Sektion
+        <p className="pProfil1">
+          Hallo! Mein Name ist
+          <input
+            type="text"
+            className="input1"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+         .
+        </p>
+
+        <p className="pProfil2">
+          Ich wohne in
+          <input
+            type="text"
+            className="input2"
+            value={city}
+            onChange={(e) => setCity(e.target.value
